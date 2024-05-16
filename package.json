@@ -4,7 +4,8 @@
   "description": "LMS Portal Backend",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start: "node indx.js"
   },
   "author": "Developed By Rhombus",
   "license": "ISC",
