@@ -5,7 +5,7 @@ const cors = require("cors");
 const router = require('./Routes/routes');
 const port = process.env.PORT || 8000;
 const io = require('socket.io')(8080, ({
-      cors: "http://localhost:3000/"
+      cors: "https://studentportalbackend.onrender.com"
 }));
 
 app.use(cors());
@@ -15,6 +15,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(router);
 app.use("/uploads", express.static("./Upload"));
+
 let users = [];
 io.on('connection', (socket) => {
       console.log('New client connected', socket.id);

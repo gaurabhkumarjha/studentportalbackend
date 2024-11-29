@@ -21,6 +21,7 @@ router.delete("/delete/completedtask/:id", FacultyAuthmiddelware, Controllers.De
 router.put("/edittask/:id", FacultyAuthmiddelware, Controllers.EditFacultytaskprogress);//Edit Faculty Task Progress only.
 
 router.post("/upload/assignment/byfaculty", FacultyAuthmiddelware, CommonuploadByfac.single('assbyfaculty'), Controllers.UplaodAssbyFac);//Upload Assignment by Faculty.
+router.delete("/del/all/uploaded/faculty-assignment", Controllers.DelAssbyFac); // delete all assignments.
 router.post("/upload/notes/byfaculty", FacultyAuthmiddelware, CommonuploadByfac.single('notesbyfac'), Controllers.UplaodNotesbyFac);//Upload Notes by Faculty.
 
 

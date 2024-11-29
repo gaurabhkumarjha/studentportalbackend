@@ -282,7 +282,19 @@ exports.UplaodAssbyFac = async (req, res) => { // Upload Assignment By faculty
         await uploadass.save(); // Uplaod ass in DB
         // Respond with success message
         res.status(201);
-        res.status(201).json({ message: 'Assignment successful', uploadass, user_id });
+        res.status(201).json({ message: 'Assignment successfully uploaded', uploadass, user_id });
+
+    } catch (err) {
+        res.status(500).json({ message: 'An error occurred', error: err });
+    }
+}
+
+exports.DelAssbyFac = async (req, res) => { // Delete Assignment By faculty
+    try {
+        await UploadassByfac.deleteMany();
+        // Respond with success message
+        res.status(200);
+        res.status(200).json({ message: 'All assignment deleted successfully'});
 
     } catch (err) {
         res.status(500).json({ message: 'An error occurred', error: err });
@@ -623,7 +635,8 @@ exports.Get_PlageReport = async (req, res) => { // In assignment details, get pl
         const response = await axios.get('https://plagiarismsearch.com/api/v3/reports/sources/' + id, {
             headers: {
                 'Content-type': 'application/json',
-                'Authorization': 'gouravkumarjhaa@gmail.com:dQIhakoFjzHhojkD63on9UiOgSvsttKypwDzrD2HidOfjrtqv-190213738',
+                'Authorization': 'noreplyrhombus@gmail.com:hl7ypEtBdDflyRpfEAavSyZzjXFGwQPWQzrumcH2VPI6er0TYDDsr-218023890'
+                // 'Authorization': 'gouravkumarjhaa@gmail.com:dQIhakoFjzHhojkD63on9UiOgSvsttKypwDzrD2HidOfjrtqv-190213738',
             },
         });
         const result = response.data;
@@ -1160,6 +1173,8 @@ exports.CheckPlag = async (req, res) => { // check Plagarism
             const formData = new FormData();
             // Add form fields
             const fileDetails = req.file;
+            //console.log(fileDetails);
+            
 
             const fileContent = fs.readFileSync(fileDetails.path);
             formData.append('document', fileContent, {
@@ -1196,11 +1211,13 @@ exports.CheckPlag = async (req, res) => { // check Plagarism
             const response = await axios.post(apiUrl, formData, {
                 headers: {
                     ...formData.getHeaders(),
-                    'Authorization': 'gouravkumarjhaa@gmail.com:dQIhakoFjzHhojkD63on9UiOgSvsttKypwDzrD2HidOfjrtqv-190213738',
+                    'Authorization': 'noreplyrhombus@gmail.com:hl7ypEtBdDflyRpfEAavSyZzjXFGwQPWQzrumcH2VPI6er0TYDDsr-218023890'
+                    // 'Authorization': 'gouravkumarjhaa@gmail.com:dQIhakoFjzHhojkD63on9UiOgSvsttKypwDzrD2HidOfjrtqv-190213738',
                 },
             });
 
             const result = response.data;
+            //console.log(result);
             if (response.status === 202) {
                 const SubmitAssData = new SubmitAssBYStudent({
                     WhichsubjectofAss: id, submitedBY: user_id, user_id: user_id, PlagReportID: result.data.id, Assignment: req.file.filename
@@ -1243,7 +1260,8 @@ exports.GetPlagReport = async (req, res) => { // Get Plag Report
                     break;
                 }
             }
-
+            
+            
             if (AssignementData) {
                 //console.log(AssignementData);
                 const p_id = AssignementData.PlagReportID;
@@ -1253,7 +1271,8 @@ exports.GetPlagReport = async (req, res) => { // Get Plag Report
                     const response = await axios.get('https://plagiarismsearch.com/api/v3/reports/sources/' + p_id, {
                         headers: {
                             'Content-type': 'application/json',
-                            'Authorization': 'gouravkumarjhaa@gmail.com:dQIhakoFjzHhojkD63on9UiOgSvsttKypwDzrD2HidOfjrtqv-190213738',
+                            'Authorization': 'noreplyrhombus@gmail.com:hl7ypEtBdDflyRpfEAavSyZzjXFGwQPWQzrumcH2VPI6er0TYDDsr-218023890'
+                            // 'Authorization': 'gouravkumarjhaa@gmail.com:dQIhakoFjzHhojkD63on9UiOgSvsttKypwDzrD2HidOfjrtqv-190213738',
                         },
                     });
                     const result = response.data;
@@ -1297,7 +1316,8 @@ exports.DeletePlagReport = async (req, res) => { // Delete Plag Report
             const response = await axios.get('https://plagiarismsearch.com/api/v3/reports/delete/' + p_id, {
                 headers: {
                     'Content-type': 'application/json',
-                    'Authorization': 'gouravkumarjhaa@gmail.com:dQIhakoFjzHhojkD63on9UiOgSvsttKypwDzrD2HidOfjrtqv-190213738',
+                    'Authorization': 'noreplyrhombus@gmail.com:hl7ypEtBdDflyRpfEAavSyZzjXFGwQPWQzrumcH2VPI6er0TYDDsr-218023890'
+                    // 'Authorization': 'gouravkumarjhaa@gmail.com:dQIhakoFjzHhojkD63on9UiOgSvsttKypwDzrD2HidOfjrtqv-190213738',
                 },
             });
             const result = response.data;
@@ -1583,10 +1603,13 @@ exports.Add_Request_To_Change_details = async (req, res) => {
 
         const { Faculty_ID, selectedval } = req.body;
         const flag = await RequestToincoorect.findOne({ RequstedBY: user_id });
-
         if (flag) {
             return res.status(400).json({ flag });
-        } else {
+        }
+        if (selectedval === "" || selectedval === undefined || selectedval === null) {
+            return res.status(500).json({message: "Please select the details"});
+        }
+        else {
             const Obj_Request = new RequestToincoorect({
                 RequstedBY: user_id,
                 ChangedBY: Faculty_ID,
@@ -2390,7 +2413,7 @@ exports.Get_All_friend_chat = async (req, res) => {
 
         // Convert the map values to an array
         const mergedObjects = Object.values(uniqueConversationsMap);
-       // console.log(mergedObjects);
+        // console.log(mergedObjects);
         return res.status(200).json({ mergedObjects });
     } catch (error) {
         console.log(error);
